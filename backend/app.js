@@ -1,9 +1,21 @@
 
 const express = require('express');
 
+const mongoose = require('mongoose');
+const Post = require('./models/post')
 const app = express();
 
+mongoose.connect("mongodb+srv://Naizel25:Naizel25@cluster0.9kw8f.mongodb.net/node-angular?retryWrites=true&w=majority")
+.then(() => {
+    console.log('connected to the database!')
+}).catch(() => {
+    console.log("connection failed")
+})
+
+
+
 const bodyParser = require("body-parser");
+const post = require('./models/post');
 
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({extended:false}))
@@ -19,12 +31,40 @@ app.use((req,res,next) => {
 })
 
 app.post('/api/posts',(req,res,next) => {
-    const post = req.body;
+    const post = new Post({
+        title: req.body.title,
+        content: req.body.content
+    });
     console.log(post);
+    post.save();
     res.status(201).json({
         message: 'Post added successfully'
     })
 });
+
+app.get('/api/posts', (req,res,next) => {
+    Post.find().then(documents => {
+        res.status(200).json({
+            message:"Posts fetched Successfully",
+            posts:documents
+        })
+    })
+
+})
+
+app.delete('/api/posts/:id', (req,res,next) => {
+  Post.deleteOne({
+      _id: req.params.id
+  }).then(result => {
+    console.log(result);
+    
+    res.status(200).json({
+        message:"Posts Delected",
+        //posts:documents
+    })
+  })
+
+} )
 
 app.use('/api/posts',(req,res,next) => {
     const posts = [
