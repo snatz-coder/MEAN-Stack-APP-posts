@@ -7,7 +7,12 @@
         </mat-form-field>
         <div>
             <button mat-sroked-button type="button" (click)="filePicker.click()">Pick Image</button>
-            <input type="file" #filePicker>
+            <input type="file" #filePicker (change)="onImagePicked($event)">
+
+   
+        </div>
+        <div class="image-preview" *ngIf="url !== '' && url">
+            <img [src]="url" [alt]="form.value.title">
         </div>
         <mat-form-field>
             <textarea matInput row="6"  name="content" formControlName="content" 
