@@ -19,18 +19,20 @@ export class PostService {
     this.http.get<{ message: string, posts: any, maxPosts:number }>('http://localhost:3000/api/posts/' + queryParams)
       .pipe(map((postData) => {
         return { 
-          post: postData.posts.map((post: { title: any; content: any; _id: any; imagePath: any; }) => {
+          post: postData.posts.map((post: { title: any; content: any; _id: any; imagePath: any; creator:any }) => {
           return {
             title: post.title,
             content: post.content,
             id: post._id,
-            imagePath: post.imagePath
+            imagePath: post.imagePath,
+            creator:post.creator
           }
         }), 
         maxPosts: postData.maxPosts}
 
       }))
       .subscribe(transformedPostData => {
+        console.log("transformed",transformedPostData)
         this.posts = transformedPostData.post;
         this.postsUpdated.next({ 
           posts:[...this.posts], 
@@ -41,7 +43,7 @@ export class PostService {
 
   getPost(id: string) {
     // return {...this.posts.find(p => p.id === id)}
-    return this.http.get<{ _id: string, title: string, content: string, imagePath:string }>('http://localhost:3000/api/posts/' + id)
+    return this.http.get<{ _id: string, title: string, content: string, imagePath:string, creator:string }>('http://localhost:3000/api/posts/' + id)
   }
 
   getPostUpdateListener() {
@@ -75,7 +77,8 @@ export class PostService {
         id: id,
         title: title,
         content: content,
-        imagePath: image
+        imagePath: image,
+        creator:null
       }
     }
 

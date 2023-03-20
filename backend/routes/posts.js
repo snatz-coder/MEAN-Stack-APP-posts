@@ -35,7 +35,8 @@ checkAuth,
     const post = new Post({
         title: req.body.title,
         content: req.body.content,
-        imagePath: url + "/images/" + req.file.filename
+        imagePath: url + "/images/" + req.file.filename,
+        creator: req.userData.userId
     });
 
     post.save().then(createdPost => {
@@ -82,12 +83,20 @@ router.get('', (req, res, next) => {
 router.delete('/:id',checkAuth, (req, res, next) => {
     const id = mongoose.Types.ObjectId(req.params.id.trim());
     Post.deleteOne({
-        _id: id
+        _id: id,
+        creator:req.userData.userId
     }).then(result => {
-        res.status(200).json({
-            message: "Posts Delected",
-            //posts:documents
-        })
+        if(result.n > 0){
+            res.status(200).json({
+                message: "Deletion Successful",
+                //posts:documents
+            })    
+        }else{
+            res.status(401).json({
+                message: "Not Authorized",
+                //posts:documents
+            })
+        }
     })
 
 })
@@ -104,16 +113,24 @@ router.put('/:id', checkAuth, multer({storage: storage}).single("image"),
         _id: req.body.id,
         title: req.body.title,
         content: req.body.content,
-        imagePath: imagePath
+        imagePath: imagePath,
+        creator:req.userData.userId
     })
 
     const id = mongoose.Types.ObjectId(req.params.id.trim());
     Post.updateOne({
-        _id: id
+        _id: id,
+        creator:req.userData.userId
     }, post).then(result => {
-        res.status(200).json({
-            message: 'Updated successfully'
-        })
+        if(result.nModified > 0){
+            res.status(200).json({
+                message: 'Updated successfully'
+            })
+        } else{
+            res.status(401).json({
+                message: 'Not Authorized'
+            })
+        }
     })
 })
 
