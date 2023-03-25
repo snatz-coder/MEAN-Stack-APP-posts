@@ -40,8 +40,10 @@ export class PostListComponent implements OnInit, OnDestroy {
       this.authStatusSub = this.authService.getAuthStatusListener().subscribe(
         isAuthenticated => {
            this.userIsAuthenticated = isAuthenticated;
+           this.userId = this.authService.getUserId();
         }
-      ) }
+      ) 
+    }
 
 
   onDelete(postId: string) {

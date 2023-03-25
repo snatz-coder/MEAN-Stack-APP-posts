@@ -76,7 +76,6 @@ export class PostCreateComponent implements OnInit , OnDestroy{
     // }
     this.isLoading = true;
     if (this.mode === "create") {
-      console.log('save podt',this.form.value)
       this.postService.addPost(this.form.value.id, this.form.value.title, this.form.value.content, this.form.value.image);
     }
     else {

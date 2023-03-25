@@ -12,7 +12,7 @@ export class AuthService {
   private token!: any;
   private authStatusListener = new Subject<boolean>();
   private tokenTimer: any;
-  private userId!: string | any;
+  private userId!: any;
   constructor(private http: HttpClient, private router: Router) { }
 
    getToken(){
@@ -74,6 +74,7 @@ export class AuthService {
    if(expiresIn > 0){
      this.token = authInformation?.token;
      this.isAuthenticated = true;
+     this.userId = authInformation.userId;
      this.setAuthTimer(expiresIn / 1000);
      this.authStatusListener.next(true);
    }
@@ -111,7 +112,7 @@ export class AuthService {
   private getAuthData(){
     const token = localStorage.getItem("token");
     const expirationDate = localStorage.getItem("expiration") || '';
-    const userId = localStorage.getItem("userId") || '';
+    const userId = localStorage.getItem("userId");
     if(!token && !expirationDate){
       return;
     }
