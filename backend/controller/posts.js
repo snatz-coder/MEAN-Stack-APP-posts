@@ -46,7 +46,7 @@ exports.createPost =  (req, res, next) => {
         _id: id,
         creator:req.userData.userId
     }, post).then(result => {
-        if(result.modifiedCount > 0){
+        if(result.acknowledged){
             res.status(200).json({
                 message: 'Updated successfully'
             })
